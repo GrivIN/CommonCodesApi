@@ -1,0 +1,64 @@
+openapi: "3.0.0"
+info:
+  title: Common Codes API
+  version: 1.0.0
+  contact:
+    name: Andrzej Bistram
+    url: http://www.gitrhub.com/GrivIN
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+paths:
+  /system:
+    get:
+      description: List available systems
+      responses:
+        '200':
+          description: A list of available systems.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/system'
+  /system/{systemName}/code/{codeId}:
+    get:
+      description: Get details about given code
+      parameters:
+        - name: systemName
+          in: path
+          description: Name of the code system
+          required: true
+          schema:
+            type: string
+        - name: codeId
+          in: path
+          description: code IDentifier in the system
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Code details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/code'
+        '404':
+          description: Code not found.
+components:
+  schemas:
+    system:
+      type: object
+      properties:
+        name:
+          type: string
+    code:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
