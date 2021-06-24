@@ -4,13 +4,13 @@
 package main
 
 import (
-	"fmt"
+	// "fmt"
 	"net/http"
 
+	"github.com/GrivIN/CommonCodesApi/Openapi"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-
-	"github.com/GrivIN/CommonCodesApi/Openapi"
+	"github.com/go-chi/render"
 )
 
 //
@@ -20,12 +20,30 @@ import (
 type ServerImpl struct{}
 
 func (*ServerImpl) GetSystem(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(fmt.Sprintf("title:%s", "XXX")))
-	// Implement me
+	name := "test"
+	system := &System{Name: &name}
+	render.Render(w, r, system)
 }
 
 func (*ServerImpl) GetSystemSystemNameCodeCodeId(w http.ResponseWriter, r *http.Request, systemName string, codeId string) {
 	// Implement me
+}
+
+// Code defines model for code.
+type Code struct {
+	Description *string `json:"description,omitempty"`
+	Id          *string `json:"id,omitempty"`
+	Name        *string `json:"name,omitempty"`
+}
+
+// System defines model for system.
+type System struct {
+	Name *string `json:"name,omitempty"`
+}
+
+func (rd *System) Render(w http.ResponseWriter, r *http.Request) error {
+	// Pre-processing before a response is marshalled and sent across the wire
+	return nil
 }
 
 func main() {
@@ -33,6 +51,7 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(render.SetContentType(render.ContentTypeJSON))
 
 	Openapi.HandlerFromMux(&myServer, r)
 	http.ListenAndServe(":3333", r)
